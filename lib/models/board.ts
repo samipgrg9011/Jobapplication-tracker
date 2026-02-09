@@ -26,9 +26,6 @@ const BoardSchema = new Schema<IBoard>({
         {
             type: Schema.Types.ObjectId,
             ref: "Column",
-
-
-
         }
     ]
 

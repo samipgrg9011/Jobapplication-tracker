@@ -33,6 +33,7 @@ const ColumnSchema = new Schema<IColumn>({
         {
             type: Schema.Types.ObjectId,
             ref: "JobApplication",
+            required: false,
 
 
 

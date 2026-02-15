@@ -22,14 +22,17 @@ export default async function DashBoard() {
 
   }).populate({
 
-    path: "columns"
+    path: "columns",
+    populate:{
+      path: "jobApplications",
+    }
 
   })
 
-  // console.log(board);
+  
 
-
-  const board = boardDoc ? JSON.parse(JSON.stringify(boardDoc)) : null;
+  // const board = boardDoc ? JSON.parse(JSON.stringify(boardDoc)) : null;
+  const board = JSON.parse(JSON.stringify(boardDoc));
 
   
 

@@ -1,42 +1,55 @@
+
 import { getSession } from "@/lib/auth/auth";
 import connectDB from "@/lib/db"
 import { Board } from "@/lib/models";
 import KanbanBoard from "@/components/kanban-board";
 
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
+
+async function getBoard(userId: string) {
+
+  "use cache"
 
 
-export default async function DashBoard() {
-
-  const session = await  getSession();
-
-  // if(session?.user){
-  //   redirect("/sign-in")
-  // }
- 
   await connectDB();
 
   const boardDoc = await Board.findOne({
-    userId: session?.user.id,
+    userId: userId,
     name: "Job Hunt",
 
   }).populate({
 
     path: "columns",
-    populate:{
+    populate: {
       path: "jobApplications",
     }
 
   })
 
-  
+
+  if (!boardDoc)
+    return null;
+
+
 
   // const board = boardDoc ? JSON.parse(JSON.stringify(boardDoc)) : null;
   const board = JSON.parse(JSON.stringify(boardDoc));
 
-  
+  return board;
 
-return (
+
+}
+
+async function DashBoardPage() {
+
+  const session = await getSession();
+  const board = await getBoard(session?.user.id ?? "");
+
+  // if(session?.user){
+  //   redirect("/sign-in")
+  // }
+  return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto p-6">
         <div className="mb-6">
@@ -48,4 +61,21 @@ return (
       </div>
     </div>
   );
+}
+
+
+
+export default async function DashBoard() {
+
+  return <Suspense fallback={<p> Loading...</p>}>
+    <DashBoardPage />
+
+  </Suspense>
+
+
+
+
+
+
+
 }

@@ -6,6 +6,7 @@ import connectDB from "../db"
 import { Board, Column, JobApplication } from "../models"
 import board from "../models/board"
 import jobApplication from "../models/job-application"
+import { revalidatePath } from "next/cache"
 
 interface JobapplicationData {
     company?: string,
@@ -113,11 +114,14 @@ const updated = await Column.findByIdAndUpdate(
   { new: true }           // ← return updated document
 );
 
+
 if (!updated) {
   console.error("Failed to update column – ID not found:", columnId);
   // You can return error to client here
   return { success: false, error: "Failed to add application to column" };
 }
+
+revalidatePath(`/dashboard`)
 
 // If you got here → update succeeded
 return { success: true, data: JSON.parse(JSON.stringify(jobApplication)) };

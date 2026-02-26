@@ -4,12 +4,12 @@ import jobApplication from "./models/job-application";
 
 const DEFAULT_COLUMNS = [
     {
-        name: "Wish list",
+        name: "Wish List",
         order: 0,
     },
     { name: "Applied", order: 1 },
     { name: "Interviewing", order: 2 },
-    { name: "offer", order: 3 },
+    { name: "Offer", order: 3 },
     { name: "Rejected", order: 4 },
 ]
 export async function initialzeUserBoard(userId: string) {

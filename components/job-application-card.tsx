@@ -4,6 +4,7 @@ import { Edit2, ExternalLink, MoreVertical, Trash2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import column from "@/lib/models/column";
+import { updateJobApplication } from "@/lib/actions/job-applications";
 
 
 
@@ -16,6 +17,17 @@ export default function JobApplicationCard({
     job,
     columns
 }: JobApplicationCardProps) {
+    async function handleMove(newColumnId: string) {
+        try {
+            const result = await updateJobApplication(job._id, {
+                columnId: newColumnId,
+            });
+        } catch (err) {
+            console.error("Failed to move job application: ", err);
+        }
+    }
+
+
     // return (
     //     <>
     //         <Card>
@@ -103,12 +115,12 @@ export default function JobApplicationCard({
                                         </span>
                                     ))}
                                 </div>
-                            )}   
+                            )}
 
                             {job.jobUrl && (
-                                <a 
-                                    target="blank" 
-                                    href={job.jobUrl} 
+                                <a
+                                    target="blank"
+                                    href={job.jobUrl}
                                     className="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 hover:underline mt-1"
                                     onClick={(e) => e.stopPropagation()}
                                 >
@@ -120,9 +132,9 @@ export default function JobApplicationCard({
 
                         <div className="flex-shrink-0">
                             <DropdownMenu>
-                                <DropdownMenuTrigger>
-                                    <Button 
-                                        variant="ghost" 
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="ghost"
                                         size="icon"
                                         className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted/70"
                                     >
@@ -135,13 +147,16 @@ export default function JobApplicationCard({
                                         <Edit2 className="h-4 w-4" />
                                         Edit
                                     </DropdownMenuItem>
-                                    {columns.length > 1 &&(
+                                    {columns.length > 1 && (
                                         <>
-                                        {columns.filter((c) => c._id !== job.columnId).map((column)=>(
-                                            <DropdownMenuItem key={column._id} className="gap-2">
-                                                Move to {column.name}
-                                            </DropdownMenuItem>
-                                        ))}
+                                            {columns.filter((c) => c._id !== job.columnId)
+                                                .map((column, key) => (
+                                                    <DropdownMenuItem
+                                                        key={key}
+                                                        onClick={() => handleMove(column._id)}>
+                                                        Move to {column.name}
+                                                    </DropdownMenuItem>
+                                                ))}
                                         </>
                                     )}
 
